@@ -163,8 +163,7 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
             for (int i = 0; i < transforms.length; i++) {
                 String transform = transforms[i];
 
-                // HACK
-                if (i > 0) {
+                if (!shouldIncludeTransform(transform)) {
                     continue;
                 }
 
@@ -183,5 +182,16 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
             }
             createEndElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Transforms);
         }
+    }
+
+    private boolean shouldIncludeTransform(String transform) {
+        boolean include = true;
+
+        if (securityProperties.getSignatureDefaultCanonicalizationTransform() != null &&
+                !securityProperties.isSignatureIncludeDigestTransform() &&
+                transform.equals(securityProperties.getSignatureDefaultCanonicalizationTransform())) {
+            include = false;
+        }
+        return include;
     }
 }

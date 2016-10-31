@@ -104,9 +104,13 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         OutputProcessorChain subOutputProcessorChain = outputProcessorChain.createSubChain(this);
 
         List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(1);
-        if (securityProperties.isGenerateIds()) {
-            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID("HDR")));
+        if (securityProperties.isSignatureGenerateIds()) {
+            attributes = new ArrayList<XMLSecAttribute>(1);
+            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID(null)));
+        } else {
+            attributes = Collections.emptyList();
         }
+
         XMLSecStartElement signatureElement = createStartElementAndOutputAsEvent(subOutputProcessorChain,
                 XMLSecurityConstants.TAG_dsig_Signature, true, attributes);
 
@@ -168,10 +172,10 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         while (signaturePartDefIterator.hasNext()) {
             SignaturePartDef signaturePartDef = signaturePartDefIterator.next();
             String uriString;
-            if (securityProperties.isGenerateIds()) {
-                if (signaturePartDef.isExternalResource()) {
-                    uriString = signaturePartDef.getSigRefId();
-                } else if (signaturePartDef.isGenerateXPointer()) {
+            if (signaturePartDef.isExternalResource()) {
+                uriString = signaturePartDef.getSigRefId();
+            } else if (signaturePartDef.getSigRefId() == null) {
+                if (signaturePartDef.isGenerateXPointer()) {
                     uriString = "#xpointer(id('" + signaturePartDef.getSigRefId() + "'))";
                 } else {
                     uriString = "#" + signaturePartDef.getSigRefId();
@@ -202,10 +206,13 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         createCharactersAndOutputAsEvent(subOutputProcessorChain, new Base64(76, new byte[]{'\n'}).encodeToString(signatureValue));
         createEndElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_SignatureValue);
 
-        attributes = new ArrayList<XMLSecAttribute>(1);
-        if (securityProperties.isGenerateIds()) {
-            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID("KEY")));
+        if (securityProperties.isSignatureGenerateIds()) {
+            attributes = new ArrayList<XMLSecAttribute>(1);
+            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID(null)));
+        } else {
+            attributes = Collections.emptyList();
         }
+
         if (!SecurityTokenConstants.KeyIdentifier_NoKeyInfo.equals(
             getSecurityProperties().getSignatureKeyIdentifier())) {
             createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo, false, attributes);

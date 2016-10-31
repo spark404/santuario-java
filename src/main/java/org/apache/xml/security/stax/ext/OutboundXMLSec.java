@@ -176,7 +176,7 @@ public class OutboundXMLSec {
             throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
         }
 
-        final String securityTokenid = IDGenerator.generateID("SIG");
+        final String securityTokenid = IDGenerator.generateID(null);
         final OutboundSecurityToken securityToken =
                 new GenericOutboundSecurityToken(securityTokenid, SecurityTokenConstants.DefaultToken, key, x509Certificates);
         if (securityProperties.getSignatureVerificationKey() instanceof PublicKey) {

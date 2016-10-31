@@ -82,10 +82,10 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                         signaturePartDef.setDigestAlgo(getSecurityProperties().getSignatureDigestAlgorithm());
                     }
 
-                    if (securityProperties.isGenerateIds()) {
+                    if (securityProperties.isSignatureGenerateIds()) {
                         if (securePart.getIdToSign() == null) {
                             signaturePartDef.setGenerateXPointer(securePart.isGenerateXPointer());
-                            signaturePartDef.setSigRefId(IDGenerator.generateID("SIGDEF"));
+                            signaturePartDef.setSigRefId(IDGenerator.generateID(null));
 
                             Attribute attribute = xmlSecStartElement.getAttributeByName(securityProperties.getIdAttributeNS());
                             if (attribute != null) {

@@ -75,7 +75,9 @@ public class XMLSecurityProperties {
 
     private final Map<String, Key> keyNameMap = new HashMap<String, Key>();
 
-    private boolean generateIds = true;
+    private boolean signatureGenerateIds = true;
+    private boolean signatureIncludeDigestTransform = true;
+    private String signatureDefaultCanonicalizationTransform;
     
     public XMLSecurityProperties() {
     }
@@ -111,7 +113,9 @@ public class XMLSecurityProperties {
         this.signatureKeyName = xmlSecurityProperties.signatureKeyName;
         this.encryptionKeyName = xmlSecurityProperties.encryptionKeyName;
         this.keyNameMap.putAll(xmlSecurityProperties.keyNameMap);
-        this.generateIds = xmlSecurityProperties.generateIds;
+        this.signatureGenerateIds = xmlSecurityProperties.signatureGenerateIds;
+        this.signatureIncludeDigestTransform = xmlSecurityProperties.signatureIncludeDigestTransform;
+        this.signatureDefaultCanonicalizationTransform = xmlSecurityProperties.signatureDefaultCanonicalizationTransform;
     }
 
     public SecurityTokenConstants.KeyIdentifier getSignatureKeyIdentifier() {
@@ -468,11 +472,43 @@ public class XMLSecurityProperties {
         keyNameMap.put(keyname, key);
     }
 
-    public boolean isGenerateIds() {
-        return generateIds;
+    public boolean isSignatureGenerateIds() {
+        return signatureGenerateIds;
     }
 
-    public void setGenerateIds(boolean generateIds) {
-        this.generateIds = generateIds;
+    /**
+     * specifies if Id attributes should be generated for the document element, the Signature element and KeyInfo structures
+     *
+     * @param signatureGenerateIds set to true (default) to generate Id attributes
+     */
+    public void setSignatureGenerateIds(boolean signatureGenerateIds) {
+        this.signatureGenerateIds = signatureGenerateIds;
+    }
+
+    public boolean isSignatureIncludeDigestTransform() {
+        return signatureIncludeDigestTransform;
+    }
+
+    /**
+     * specifies if the transform set with signatureDigestAlgorithm should be included in the Reference/Transforms
+     * list
+     * @param signatureIncludeDigestTransform set to true (default) to include the transform in the list
+     */
+    public void setSignatureIncludeDigestTransform(boolean signatureIncludeDigestTransform) {
+        this.signatureIncludeDigestTransform = signatureIncludeDigestTransform;
+    }
+
+    public String getSignatureDefaultCanonicalizationTransform() {
+        return signatureDefaultCanonicalizationTransform;
+    }
+
+    /**
+     * set the default signature digest transform. This is used in combination with signatureIncludeDigestTransform to omit a
+     * default transform from the Reference/Transforms list for endpoints that can't deal with that.
+     *
+     * @param signatureDefaultCanonicalizationTransform a string indicating the default transform.
+     */
+    public void setSignatureDefaultCanonicalizationTransform(String signatureDefaultCanonicalizationTransform) {
+        this.signatureDefaultCanonicalizationTransform = signatureDefaultCanonicalizationTransform;
     }
 }
