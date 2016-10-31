@@ -104,7 +104,9 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         OutputProcessorChain subOutputProcessorChain = outputProcessorChain.createSubChain(this);
 
         List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(1);
-        attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID(null)));
+        if (securityProperties.isGenerateIds()) {
+            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID("HDR")));
+        }
         XMLSecStartElement signatureElement = createStartElementAndOutputAsEvent(subOutputProcessorChain,
                 XMLSecurityConstants.TAG_dsig_Signature, true, attributes);
 
@@ -166,12 +168,16 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         while (signaturePartDefIterator.hasNext()) {
             SignaturePartDef signaturePartDef = signaturePartDefIterator.next();
             String uriString;
-            if (signaturePartDef.isExternalResource()) {
-                uriString = signaturePartDef.getSigRefId();
-            } else if (signaturePartDef.isGenerateXPointer()) {
-                uriString = "#xpointer(id('" + signaturePartDef.getSigRefId() + "'))";
+            if (securityProperties.isGenerateIds()) {
+                if (signaturePartDef.isExternalResource()) {
+                    uriString = signaturePartDef.getSigRefId();
+                } else if (signaturePartDef.isGenerateXPointer()) {
+                    uriString = "#xpointer(id('" + signaturePartDef.getSigRefId() + "'))";
+                } else {
+                    uriString = "#" + signaturePartDef.getSigRefId();
+                }
             } else {
-                uriString = "#" + signaturePartDef.getSigRefId();
+                uriString = "";
             }
             attributes = new ArrayList<XMLSecAttribute>(1);
             attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_URI, uriString));
@@ -197,7 +203,9 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         createEndElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_SignatureValue);
 
         attributes = new ArrayList<XMLSecAttribute>(1);
-        attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID(null)));
+        if (securityProperties.isGenerateIds()) {
+            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID("KEY")));
+        }
         if (!SecurityTokenConstants.KeyIdentifier_NoKeyInfo.equals(
             getSecurityProperties().getSignatureKeyIdentifier())) {
             createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo, false, attributes);

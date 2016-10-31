@@ -163,6 +163,11 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
             for (int i = 0; i < transforms.length; i++) {
                 String transform = transforms[i];
 
+                // HACK
+                if (i > 0) {
+                    continue;
+                }
+
                 List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(1);
                 attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, transform));
                 createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Transform, false, attributes);

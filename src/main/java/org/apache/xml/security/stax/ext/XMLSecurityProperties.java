@@ -74,6 +74,8 @@ public class XMLSecurityProperties {
     private QName idAttributeNS = XMLSecurityConstants.ATT_NULL_Id;
 
     private final Map<String, Key> keyNameMap = new HashMap<String, Key>();
+
+    private boolean generateIds = true;
     
     public XMLSecurityProperties() {
     }
@@ -109,6 +111,7 @@ public class XMLSecurityProperties {
         this.signatureKeyName = xmlSecurityProperties.signatureKeyName;
         this.encryptionKeyName = xmlSecurityProperties.encryptionKeyName;
         this.keyNameMap.putAll(xmlSecurityProperties.keyNameMap);
+        this.generateIds = xmlSecurityProperties.generateIds;
     }
 
     public SecurityTokenConstants.KeyIdentifier getSignatureKeyIdentifier() {
@@ -465,4 +468,11 @@ public class XMLSecurityProperties {
         keyNameMap.put(keyname, key);
     }
 
+    public boolean isGenerateIds() {
+        return generateIds;
+    }
+
+    public void setGenerateIds(boolean generateIds) {
+        this.generateIds = generateIds;
+    }
 }
