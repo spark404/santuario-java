@@ -174,7 +174,7 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
             String uriString;
             if (signaturePartDef.isExternalResource()) {
                 uriString = signaturePartDef.getSigRefId();
-            } else if (signaturePartDef.getSigRefId() == null) {
+            } else if (signaturePartDef.getSigRefId() != null) {
                 if (signaturePartDef.isGenerateXPointer()) {
                     uriString = "#xpointer(id('" + signaturePartDef.getSigRefId() + "'))";
                 } else {
