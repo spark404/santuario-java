@@ -19,7 +19,6 @@
 package org.apache.xml.security.test.stax.signature;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
